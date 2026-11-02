@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<title>Command Store — 테스트 전용</title>
+<h1>Command Store 두 탭 검증</h1>
+<p>반드시 별도 테스트 전용 localhost origin에서만 실행하세요. 실제 사용자 데이터가 없는 origin에서 테스트 데이터만 사용하세요.</p>
+<p>이 페이지는 자동으로 저장하거나 초기화하지 않습니다. window.createTestStore(options)로 독립 Store를 만듭니다.</p>
+<p><a href="./command-store-check.md">두 탭 수동 검증 절차</a></p>
+<script type="module">
+  import { createCommandStore } from '/src/storage.js';
+  window.createTestStore = options => createCommandStore(localStorage, options);
+  window.commandStoreFixtureReady = true;
+</script>
+</html>

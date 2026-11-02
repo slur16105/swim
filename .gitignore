@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.DS_Store
+.local/
+
+# Local agent tooling and internal planning
+_bmad/
+_bmad-output/
+.agents/
+preview/
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx

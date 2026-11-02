@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Character rendering verification — development only</title>
+<style>
+body{font:14px system-ui;background:#f2f8fc;color:#18354d;margin:24px}#game{width:800px;max-width:100%;height:460px}#grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}figure{margin:0;background:white;padding:12px;border:1px solid #d4e3ef}canvas{image-rendering:pixelated}figure canvas{width:128px;height:128px}figure .frames{width:112px;height:144px}pre{white-space:pre-wrap}
+</style>
+<h1>27개 외형 · 실제 Phaser 검증</h1>
+<p>개발 전용 · 저장 API를 호출하지 않습니다. 아래 결과는 window.characterRenderingResults에서도 확인할 수 있습니다.</p>
+<pre id="results">검증 중…</pre><div id="game"></div><div id="grid"></div>
+<script type="module">
+import { CHARACTER_CATALOG as catalog, appearanceSummary } from '/src/character.js';
+import { drawAvatar, makeSwimmer, textureKey } from '/src/game/art.js';
+import { createPool } from '/src/game/PoolScene.js';
+const appearances = Object.keys(catalog.cap).flatMap(cap => Object.keys(catalog.goggles).flatMap(goggles => Object.keys(catalog.suit).map(suit => ({cap,goggles,suit}))));
+const results = window.characterRenderingResults = {ready:false, checks:{}, errors:[]};
+const check = (name, condition) => { results.checks[name] = !!condition; if (!condition) results.errors.push(name); };
+const snapshot = scene => JSON.stringify({session:scene.session,x:scene.swimmer.x,y:scene.swimmer.y,angle:scene.swimmer.angle,speed:scene.speed,paused:scene.paused,elapsed:scene.elapsed,frame:scene.currentFrame});
+const pool = createPool({cap:'orange',onReady() {
+  try {
+    const scene = pool.scene;
+    check('beforeReadyLastAppearance', JSON.stringify(scene.appearance) === JSON.stringify(appearances[26]));
+    let generated = 0;
+    const graphics = scene.make.graphics.bind(scene.make);
+    scene.make.graphics = (...args) => { generated++; return graphics(...args); };
+    const start = performance.now();
+    for (const a of appearances) {
+      makeSwimmer(scene,a);
+      const figure = document.createElement('figure'), portrait = document.createElement('canvas');
+      portrait.width=64;portrait.height=64;drawAvatar(portrait,a);figure.append(portrait);
+      const frames = document.createElement('canvas');frames.width=56;frames.height=72;frames.className='frames';
+      for(let frame=0;frame<4;frame++) frames.getContext('2d').drawImage(scene.textures.get(textureKey(a,frame)).getSourceImage(),frame%2*28,Math.floor(frame/2)*36);
+      figure.append(frames);const caption=document.createElement('figcaption');caption.textContent=appearanceSummary(a);figure.append(caption);document.querySelector('#grid').append(figure);
+    }
+    results.generationMs = performance.now()-start;
+    const beforeRepeat=generated;
+    for(const a of appearances) makeSwimmer(scene,a);
+    check('cacheReuse',generated===beforeRepeat);
+    results.textureCount = scene.textures.getTextureKeys().filter(key=>key.startsWith('swimmer-')).length;
+    check('exactly108Textures',results.textureCount===108);
+    scene.play({id:'fixture-only',distance:1000});scene.speed=4;scene.update(137,80);
+    const session=scene.session;
+    for(const paused of [false,true]) {
+      scene.paused=paused;const before=snapshot(scene);
+      for(const a of appearances) scene.setAppearance(a);
+      check(paused?'pausedPreserved':'progressPreserved',snapshot(scene)===before && scene.session===session);
+    }
+    const beforeUpdate=generated;
+    scene.setAppearance(appearances[26]);
+    for(const [paused,expectedFrame] of [[false,2],[true,0]]) {
+      scene.paused=paused;scene.update(250,16);
+      check(paused?'pausedUpdateTexture':'movingUpdateTexture',scene.swimmer.texture.key===textureKey(appearances[26],expectedFrame) && scene.currentFrame===expectedFrame);
+    }
+    check('updateCreatesNoTextures',generated===beforeUpdate);
+    scene.setCap('pink');check('legacyCap',scene.appearance.cap==='pink' && scene.appearance.goggles==='dark' && scene.appearance.suit==='dark');
+    const beforeInvalid=snapshot(scene), oldAppearance=scene.appearance;
+    const oldSession=scene.session;let invalidThrew=false;
+    try{scene.setAppearance({cap:'invalid'});}catch{invalidThrew=true;}
+    check('invalidPreservesState',invalidThrew && snapshot(scene)===beforeInvalid && scene.appearance===oldAppearance && scene.session===oldSession);
+    scene.setAppearance(appearances[26]);
+    results.ready=true;results.passed=results.errors.length===0;
+  } catch(error) {results.errors.push(error.stack);results.passed=false;results.ready=true;}
+  document.querySelector('#results').textContent=JSON.stringify(results,null,2);
+}});
+pool.scene.setAppearance(appearances[0]);pool.scene.setAppearance(appearances[26]);
+window.characterRenderingPool=pool;
+</script>
+</html>

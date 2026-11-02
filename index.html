@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0066b3"><meta name="description" content="오늘의 수영이 내일의 레벨로. 실제 수영 기록으로 성장하는 픽셀 수영장.">
+  <title>LANE CLUB — 나의 작은 수영장</title>
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="./">≈ LANE CLUB</a><span class="tag">PROTOTYPE</span></header>
+  <main>
+    <div class="intro"><p class="eyebrow">YOUR LITTLE SWIMMING WORLD</p><h1>오늘도, 나의 페이스로.</h1><p>헤엄친 만큼 쌓이는 나의 작은 성장.</p></div>
+    <div id="storage-alert" class="alert" role="alert" hidden></div>
+    <section id="home-recovery" class="recovery" hidden aria-label="저장 내용 복구"><div id="home-recovery-actions"><p>선택은 유지하고 있어요. 최신 내용을 확인한 후 다시 시작할 수 있어요.</p><button type="button" id="home-keep">계속 보기</button><button type="button" id="home-reload">최신 내용 불러오기</button></div><div id="home-recovery-confirm" hidden><p>최신 내용을 불러올까요? 불러오기에 성공하면 저장하지 않은 색상과 기록 입력을 버리고 최신 저장값으로 바꿔요. 진행 중인 수영은 중지돼요.</p><button type="button" id="home-recovery-cancel">취소 · 계속 보기</button><button type="button" id="home-recovery-accept">확인하고 불러오기</button></div><p id="home-recovery-status" role="status" tabindex="-1"></p><p id="home-recovery-error" role="alert" tabindex="-1"></p></section>
+    <section class="pool-card" aria-labelledby="pool-title">
+      <div class="section-heading"><h2 id="pool-title">나의 작은 수영장</h2><span class="tag">25m · 5 LANES</span></div>
+      <p class="caption">레인 03 · 나의 전용 레인</p>
+      <div id="game" role="img" aria-label="25미터 5레인 픽셀 수영장. 3번 레인에서 캐릭터가 자유형으로 수영합니다."><p id="game-loading">수영장을 준비하고 있어요…</p></div>
+      <div class="playback"><span id="session-badge" class="tag">READY</span><h3 id="session-title">오늘도, 한 레인부터.</h3><p id="session-distance">0 / 0 m</p><progress id="swim-progress" value="0" max="100" aria-label="수영 연출 진행률"></progress><p id="session-detail">기록을 남기면 캐릭터가 함께 수영해요.</p><div class="play-controls"><button id="pause" disabled>일시정지</button><button id="speed" aria-label="연출 재생 속도 변경">1×</button></div></div>
+      <details><summary>수영 연출 안내</summary><p>모든 영법을 자유형 동작으로 표현해요. 1× 기준 25m당 0.8초 연출은 실제 운동 시간과 달라요. 활성 탭 기준이며 일시정지 시간은 제외하고, 백그라운드에서는 늦어질 수 있어요. 다시 보기는 XP가 추가되지 않아요.</p></details>
+    </section>
+    <section class="character-card" aria-labelledby="character-title">
+      <p class="eyebrow">MY SWIMMER</p><h2 id="character-title" tabindex="-1">캐릭터를 확인하고 있어요</h2>
+      <div class="avatar-stage"><canvas id="avatar" width="64" height="64" role="img" hidden></canvas></div>
+      <p id="appearance-summary"></p><p id="character-message"></p>
+      <div id="character-growth" hidden><div class="xp-label"><strong id="level-chip">LV. 1</strong><span id="xp-label">0 / 100 XP</span></div><progress id="xp-progress" max="100" value="0" aria-label="다음 레벨 경험치"></progress></div>
+      <button id="edit-character" hidden>캐릭터 꾸미기</button>
+      <p id="character-feedback" role="status"></p><div id="display-error" hidden><p>저장은 유지되어 있어요. 캐릭터를 표시하지 못했습니다. 위 색상 요약을 확인해 주세요.</p><button id="retry-display">표시 다시 시도</button></div>
+      <details id="home-storage-notice"><summary>저장 안내</summary><p class="storage-copy"></p></details>
+    </section>
+    <section class="stats" aria-label="수영 통계">
+      <article><p>누적 수영 거리</p><strong id="total-distance">0 m</strong></article><article><p>이번 주 수영</p><strong id="week-count">0 회</strong></article><article><p>연속 수영</p><strong id="streak">0 일</strong></article><article><p>물속에서 보낸 시간</p><strong id="total-minutes">0 분</strong></article>
+    </section>
+    <section class="history-card"><div class="section-heading"><h2>나의 수영 기록 <span id="record-count">0</span></h2><button data-open-record disabled>＋ 기록</button></div><p id="record-lock-reason" role="status"></p><div id="empty-state"><h3>첫 번째 물결을 만들어 볼까요?</h3><p>캐릭터와 함께 수영 기록을 시작해요.</p></div><div class="table-scroll" id="history-wrapper" hidden><table><thead><tr><th>날짜</th><th>영법</th><th>거리</th><th>시간</th><th>경험치</th><th>기록 관리</th></tr></thead><tbody id="record-list"></tbody></table></div></section>
+    <footer>LANE CLUB · EVERY LAP COUNTS.</footer>
+  </main>
+  <div class="bottom-action"><button class="primary" id="main-action" disabled>저장 상태 확인 중…</button></div>
+  <dialog id="character-dialog" class="editor-shell" aria-labelledby="editor-title">
+    <div class="section-heading"><h2 id="editor-title" tabindex="-1">내 캐릭터 만들기</h2><button id="close-editor" type="button" aria-label="캐릭터 만들기 닫기">×</button></div>
+    <p id="editor-blocked" class="error" role="status"></p>
+    <section id="editor-recovery" class="recovery" hidden aria-label="저장 내용 복구"><div id="editor-recovery-actions"><p>선택은 유지하고 있어요. 최신 내용을 확인한 후 다시 시작할 수 있어요.</p><button type="button" id="editor-keep">계속 보기</button><button type="button" id="editor-reload">최신 내용 불러오기</button></div><div id="editor-recovery-confirm" hidden><p>최신 내용을 불러올까요? 불러오기에 성공하면 저장하지 않은 색상과 기록 입력을 버리고 최신 저장값으로 바꿔요. 진행 중인 수영은 중지돼요.</p><button type="button" id="editor-recovery-cancel">취소 · 계속 보기</button><button type="button" id="editor-recovery-accept">확인하고 불러오기</button></div><p id="editor-recovery-status" role="status" tabindex="-1"></p><p id="editor-recovery-error" role="alert" tabindex="-1"></p></section>
+    <p id="editor-completion" role="status" aria-live="polite"></p>
+    <div id="editor-body"><div class="avatar-stage"><canvas id="preview-avatar" width="64" height="64" role="img"></canvas></div><p class="preview-label">미리보기 · 저장 전</p><p id="preview-summary"></p><div id="preview-error" hidden><p>미리보기를 표시하지 못했어요. 색상 요약은 확인할 수 있어요.</p><button id="retry-preview">미리보기 다시 시도</button></div>
+      <form id="character-form"><div id="color-groups"></div><details id="editor-storage-notice" open><summary>저장 안내</summary><p class="storage-copy"></p></details><p id="editor-error" class="error" role="alert" tabindex="-1"></p><p id="editor-unchanged"></p><p id="editor-status" role="status"></p><div class="editor-actions"><button class="primary" id="save-character" type="submit">캐릭터 저장하기</button><button id="cancel-editor" type="button">취소</button></div></form>
+    </div>
+    <div id="discard-confirmation" hidden><h3>저장하지 않고 닫을까요?</h3><p>선택한 색상은 저장되지 않아요. 브라우저를 떠날 때 경고는 지원 환경에서만 표시되며, 저장하지 않은 선택은 복구되지 않아요.</p><button id="continue-editing">계속 고르기</button><button id="discard-editor">저장하지 않고 닫기</button></div>
+  </dialog>
+  <dialog id="record-dialog" class="editor-shell" aria-labelledby="dialog-title"><section id="record-recovery" class="recovery" hidden aria-label="저장 내용 복구"><div id="record-recovery-actions"><p>선택은 유지하고 있어요. 최신 내용을 확인한 후 다시 시작할 수 있어요.</p><button type="button" id="record-keep">계속 보기</button><button type="button" id="record-reload">최신 내용 불러오기</button></div><div id="record-recovery-confirm" hidden><p>최신 내용을 불러올까요? 불러오기에 성공하면 저장하지 않은 색상과 기록 입력을 버리고 최신 저장값으로 바꿔요. 진행 중인 수영은 중지돼요.</p><button type="button" id="record-recovery-cancel">취소 · 계속 보기</button><button type="button" id="record-recovery-accept">확인하고 불러오기</button></div><p id="record-recovery-status" role="status" tabindex="-1"></p><p id="record-recovery-error" role="alert" tabindex="-1"></p></section><form id="record-form"><div class="section-heading"><h2 id="dialog-title" tabindex="-1">오늘은 얼마나 헤엄쳤나요?</h2><button type="button" id="close-dialog" aria-label="기록 입력 닫기">×</button></div><p id="record-blocked" class="error" role="status"></p><input type="hidden" name="id"><label>수영한 날짜<input name="date" type="date" min="2000-01-01" required></label><label>영법<select name="stroke"><option>자유형</option><option>배영</option><option>평영</option><option>접영</option><option>혼합</option></select></label><label>수영 거리 (m)<input name="distance" type="number" min="25" max="10000" step="25" placeholder="1,000" required inputmode="numeric"></label><label>수영 시간 (분)<input name="minutes" type="number" min="1" max="600" step="1" placeholder="40" required inputmode="numeric"></label><div class="distance-presets" aria-label="거리 빠른 선택"><button type="button" data-distance="250">250m</button><button type="button" data-distance="500">500m</button><button type="button" data-distance="1000">1,000m</button></div><p id="record-preview"></p><p id="xp-reduction" class="alert" hidden>완료한 기록의 거리를 줄이면 XP와 레벨이 낮아질 수 있어요. 새 거리로 다시 계산해요.</p><p class="caption">모든 영법을 자유형 동작으로 표현해요. 수정한 기록의 XP는 새 거리 기준으로 다시 계산해요.</p><p id="form-error" class="error" role="alert" tabindex="-1"></p><button class="primary submit-button" type="submit">기록 저장하고 수영하기</button></form></dialog>
+  <div id="toast" role="status" aria-live="polite" hidden></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
