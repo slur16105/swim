@@ -27,6 +27,26 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - run: npm run build -- --base=/swim/
+      - name: Prepare retained release archive
+        env:
+          RELEASE_SHA: ${{ github.sha }}
+          RELEASE_REPOSITORY: ${{ github.repository }}
+          RELEASE_RUN_ID: ${{ github.run_id }}
+          RELEASE_RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          mkdir -p release
+          tar -czf release/dist.tar.gz -C dist .
+          (cd dist && find . -type f -print0 | sort -z | xargs -0 sha256sum) > release/dist-files.sha256
+          printf 'source_commit=%s\nrepository=%s\nrun_id=%s\nrun_attempt=%s\nbuild_command=npm run build -- --base=/swim/\nbase=/swim/\n' \
+            "$RELEASE_SHA" "$RELEASE_REPOSITORY" "$RELEASE_RUN_ID" "$RELEASE_RUN_ATTEMPT" > release/release-metadata.txt
+          (cd release && sha256sum dist.tar.gz dist-files.sha256 release-metadata.txt > SHA256SUMS)
+      - name: Retain release archive and source metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: pages-release-${{ github.sha }}
+          path: release/
+          retention-days: 30
+          if-no-files-found: error
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

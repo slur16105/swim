@@ -60,7 +60,7 @@ npm run mobile:serve
 
 다른 시점은 `play(record)`, 진행 콜백, 완료 콜백을 동일하게 구현하는 Scene으로 확장할 수 있습니다. 영법은 기록에 저장하지만 v0.1에서는 모두 자유형 애니메이션을 사용합니다. 사이드뷰·아이소메트릭·계정·서버 동기화·커뮤니티는 포함하지 않습니다.
 
-저장 키는 `lane-club:v1`입니다. 데이터는 브라우저/접속 주소별로 독립적이며, 브라우저 데이터 삭제 시 사라집니다. 날짜와 통계는 기기의 현지 날짜를 따릅니다. 연속 기록은 오늘 또는 어제부터 이어진 날짜 수이며 같은 날 여러 기록은 1일로 계산합니다. 브라우저가 백그라운드인 동안 연출은 느려지거나 중단될 수 있습니다.
+원래 브라우저 저장 키 `lane-club:v1`을 v2 payload에서도 그대로 사용합니다. 데이터는 브라우저 프로필과 origin(프로토콜·호스트·포트)별로 저장되며, 경로별로 분리되지 않습니다. 따라서 `https://slur16105.github.io/swim/`은 같은 호스트의 다른 GitHub Pages 프로젝트 경로와 LocalStorage를 공유합니다. 다른 프로젝트가 같은 키를 쓰면 충돌할 수 있습니다. 브라우저 데이터 삭제 시 기록이 사라집니다. 날짜와 통계는 기기의 현지 날짜를 따릅니다. 연속 기록은 오늘 또는 어제부터 이어진 날짜 수이며 같은 날 여러 기록은 1일로 계산합니다. 브라우저가 백그라운드인 동안 연출은 느려지거나 중단될 수 있습니다.
 
 Phaser 크기 조정 구성 참고: [Scale Manager](https://docs.phaser.io/phaser/concepts/scale-manager)
 
@@ -72,4 +72,6 @@ Phaser 크기 조정 구성 참고: [Scale Manager](https://docs.phaser.io/phase
 main에 push하면 GitHub Actions가 테스트 후 `/swim/` 경로로 빌드해 dist만 배포합니다. 공개 서버는 정적 파일을 제공하며 수영 기록은 각 브라우저 LocalStorage에 남습니다. 로컬 주소의 기록은 공개 주소로 자동 이관되지 않습니다. 실기기 수용 검증은 진행 중입니다.
 
 배포 경로의 로컬 빌드 확인: `npm run build -- --base=/swim/`.
+배포 workflow는 `pages-release-<전체 commit SHA>` 이름으로 `dist.tar.gz`, 파일별 SHA256, 아카이브·메타데이터 SHA256, 소스 commit/빌드 정보를 30일 보관합니다. 실제 보관 여부는 해당 Actions 실행의 artifact에서 확인하세요. [전환·롤백 실행서](docs/release-runbook.md)에 검증·수동 복구 절차가 있습니다. v2 호환 후보 기록은 실제 롤백 실행을 뜻하지 않으며 공개 origin 롤백은 아직 미실행입니다.
+
 로컬 인증서와 내부 BMAD 파일은 Git에 포함하지 않습니다.
