@@ -41,3 +41,10 @@ GitHub 응답은 HTML/JS 모두 `Cache-Control: max-age=600`, 해시 자산명, 
 - 공개 경로 `/swim/` 안내와 내부 문서 링크를 수정했다. 저장소는 경로가 아닌 origin별이라는 점을 README에 명시했다.
 - 실제 사용자 환경을 다른 빌드로 되돌리는 롤백은 실행하지 않았다. 보관 산출물 검증과 실제 운영 롤백을 구분한다.
 - 실기기·보조기술 결과는 [결과표](mobile-device-results.md)에 이어서 기록한다. Story1.7 전체 수용 완료는 아직 아니다.
+
+
+## 보관 산출물 실검증
+
+[Actions 실행41392479192](https://github.com/slur16105/swim/actions/runs/41392479192)은 테스트104개·빌드·보관·Pages 배포가 모두 성공했다. 소스는 `4cc88e9bc954d758a9e1ece7983e112baa385249`, 보관 이름은 `pages-release-4cc88e9bc954d758a9e1ece7983e112baa385249`, artifact ID는 `13117058867`이다. 30일 보관 정책이며 삭제·만료 전 별도 보관이 필요하다.
+
+실제 artifact를 내려받아 SHA256SUMS의 아카이브·파일목록·메타데이터3개, 압축 해제 뒤 index.html과 JS/CSS3개의 SHA256을 모두 확인했다. 메타데이터의 repository/run/source commit이 GitHub 실행과 일치한다. 공개 HTTPS에서 받은 index/JS/CSS와 복원 디렉터리 파일이 바이트 단위로 일치했다. 검증된 아카이브와 소스 식별자는 확보했으나 실제 운영 롤백 배포는 실행하지 않았다. 이번 변경은 배포 파이프라인·문서뿐이며 제품 JS/CSS는 위 실제 브라우저 검증과 동일하다.
